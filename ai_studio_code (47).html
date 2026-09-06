@@ -1,0 +1,2250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Quiz Studio 16:9 Pro - Cinematic Edition</title>
+  
+  <!-- Tipografías Virales -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #06080d;
+      --panel-bg: #0e131f;
+      --panel-border: #1a2236;
+      --primary: #00d2ff;
+      --accent: #ffb703;
+      --success: #00e676;
+      --danger: #ff2a5f;
+      --text-main: #f8fafc;
+      --text-muted: #8b9bb4;
+      
+      /* Variables Dinámicas */
+      --card-bg-color: #0c101de8;
+      --card-blur: 18px;
+      --font-family: 'Outfit', sans-serif;
+
+      /* Color Dominante Dinámico */
+      --card-dynamic-border: rgba(255, 255, 255, 0.2);
+      --card-dynamic-glow: rgba(0, 210, 255, 0.25);
+      --opt-dynamic-bg: rgba(16, 21, 34, 0.88);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow-x: hidden;
+    }
+
+    input, textarea, select, button {
+      font-family: inherit;
+    }
+
+    /* ========================================================
+       PANEL DE CONTROL VERTICAL (VISTA MÓVIL)
+       ======================================================== */
+    .app-container {
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 14px 12px 95px 12px;
+    }
+
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--panel-border);
+    }
+
+    .logo-text {
+      font-size: 1.15rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--primary), #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .card-box {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    input[type="text"], textarea, select {
+      width: 100%;
+      background: #080a11;
+      border: 1px solid #1a2235;
+      border-radius: 8px;
+      padding: 9px;
+      color: #fff;
+      font-size: 0.82rem;
+      margin-bottom: 8px;
+      user-select: text;
+    }
+
+    .file-btn-wrapper { margin-bottom: 6px; }
+    .file-btn-wrapper input[type="file"] { display: none; }
+    .file-custom-btn {
+      display: block;
+      background: #131826;
+      border: 1px dashed #26324b;
+      padding: 9px;
+      border-radius: 8px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #cbd5e1;
+      text-align: center;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .file-custom-btn.loaded {
+      border: 1px solid var(--success);
+      color: var(--success);
+      background: rgba(0, 230, 118, 0.08);
+      font-weight: 800;
+    }
+
+    .btn-action {
+      background: #171e2e;
+      border: 1px solid #28354f;
+      color: #fff;
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .questions-scroll-area {
+      max-height: 220px;
+      overflow-y: auto;
+      border: 1px solid #1a2030;
+      border-radius: 8px;
+      background: #080a11;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .question-list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #0f1422;
+      border: 1px solid #1a2338;
+      padding: 7px 9px;
+      border-radius: 8px;
+      gap: 6px;
+    }
+    .q-item-title {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+    }
+    .q-badge {
+      font-size: 0.58rem;
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-weight: 800;
+      background: #1a2236;
+      color: var(--text-muted);
+    }
+    .q-badge.active { background: rgba(0, 230, 118, 0.2); color: var(--success); }
+
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(6, 8, 13, 0.95);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid #1a2236;
+      padding: 10px 14px;
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+    }
+    .btn-launch-record {
+      width: 100%;
+      max-width: 480px;
+      background: linear-gradient(135deg, var(--primary), #2563eb);
+      color: #000;
+      font-size: 0.92rem;
+      font-weight: 900;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      box-shadow: 0 4px 20px rgba(0, 210, 255, 0.4);
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    /* Modales Táctiles */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(8px);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+    .modal-box {
+      background: #0f1422;
+      border: 1.5px solid var(--primary);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 450px;
+      padding: 14px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .preview-thumb-box {
+      width: 100%;
+      max-height: 80px;
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 6px;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid #25334e;
+    }
+    .preview-thumb-box img {
+      max-height: 80px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    /* ========================================================
+       MODO GRABACIÓN 16:9
+       ======================================================== */
+    #record-screen {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      background: #000;
+      z-index: 9999;
+      display: none;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .stage-wrapper {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .stage-canvas-16-9 {
+      position: relative;
+      height: 100vh;
+      width: 177.78vh; /* 16:9 */
+      max-width: 100vw;
+      background: #050608;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .video-background {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
+    .video-dark-tint {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.55) 100%);
+      z-index: 2;
+    }
+
+    .trivia-card-anchor {
+      position: relative;
+      z-index: 10;
+      width: 92%;
+      max-width: 740px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .trivia-card-anchor::before {
+      content: '';
+      position: absolute;
+      inset: -5%;
+      background: radial-gradient(ellipse at center, var(--card-dynamic-glow) 0%, transparent 68%);
+      z-index: -1;
+      animation: ambientGlow 4s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes ambientGlow {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.03); }
+    }
+
+    .glass-card {
+      width: 100%;
+      background: var(--card-bg-color);
+      backdrop-filter: blur(var(--card-blur));
+      -webkit-backdrop-filter: blur(var(--card-blur));
+      border: 2px solid var(--card-dynamic-border);
+      border-radius: 18px;
+      padding: 14px 18px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 20px var(--card-dynamic-glow);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      transition: border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    /* Fondo dinámico dentro de la tarjeta */
+    .card-dynamic-bg-media {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .card-dynamic-bg-tint {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 14, 25, 0.67);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(3px);
+      z-index: 1;
+      pointer-events: none;
+    }
+    .card-inner-content {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+    }
+
+    .glass-card.reveal-flash {
+      animation: revealFlash 0.6s ease-out;
+    }
+    @keyframes revealFlash {
+      0% { box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75); }
+      40% { box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 45px rgba(0, 230, 118, 0.6); }
+      100% { box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75); }
+    }
+
+    .glass-card.card-transition-out {
+      animation: cardPopOut 0.2s cubic-bezier(0.4, 0, 1, 1) forwards;
+    }
+
+    .glass-card.card-transition-in {
+      animation: cardPopIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes cardPopIn {
+      0% { opacity: 0; transform: scale(0.95) translateY(10px); filter: blur(5px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+    }
+
+    @keyframes cardPopOut {
+      0% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+      100% { opacity: 0; transform: scale(0.98) translateY(-6px); filter: blur(3px); }
+    }
+
+    /* Pastillas Superiores */
+    .card-top-indicator {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .pill-badge {
+      position: relative;
+      font-size: 0.7rem;
+      font-weight: 900;
+      padding: 4px 12px;
+      border-radius: 999px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      overflow: hidden;
+    }
+
+    .pill-genre {
+      background: rgba(0, 210, 255, 0.16);
+      border: 1.2px solid var(--primary);
+      color: var(--primary);
+      box-shadow: 0 0 12px rgba(0, 210, 255, 0.22);
+    }
+
+    .pill-counter {
+      background: rgba(255, 183, 3, 0.16);
+      border: 1.2px solid var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 12px rgba(255, 183, 3, 0.22);
+    }
+
+    .pill-badge::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 40%;
+      height: 200%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transform: rotate(25deg);
+      animation: shineSweep 5.5s infinite ease-in-out;
+    }
+
+    @keyframes shineSweep {
+      0%, 60% { left: -60%; }
+      100% { left: 140%; }
+    }
+
+    /* Layout con Imagen Hero (Proporción 8:5 / 5:3) */
+    .question-layout {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      margin-top: 14px;
+    }
+
+    .hero-image-wrap {
+      width: 100%;
+      max-width: 440px;
+      height: 195px;
+      max-height: 60vh;
+      aspect-ratio: 4 / 3;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 2px solid var(--card-dynamic-border);
+      flex-shrink: 0;
+      background: #000;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.65), 0 0 15px var(--card-dynamic-glow);
+      position: relative;
+      opacity: 0;
+      animation: heroImageIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.08s forwards;
+      transition: border-color 0.4s ease;
+    }
+
+    .hero-image-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,0.45) 100%);
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .hero-img-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: opacity 0.45s ease-in-out;
+    }
+
+    #hero-img-q { z-index: 1; opacity: 1; }
+    #hero-img-ans { z-index: 2; opacity: 0; }
+
+    @keyframes heroImageIn {
+      0% { opacity: 0; transform: scale(1.04) translateY(-8px); filter: blur(5px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+    }
+
+    .question-text-content {
+      font-size: 1.18rem;
+      font-weight: 800;
+      line-height: 1.28;
+      color: #ffffff;
+      text-align: center;
+      flex: 1;
+      width: 100%;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+      opacity: 0;
+      animation: textFadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.18s forwards;
+    }
+
+    @keyframes textFadeUp {
+      0% { opacity: 0; transform: translateY(8px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .full-width-text {
+      text-align: center;
+      font-size: 1.25rem;
+      line-height: 1.38;
+    }
+
+    /* Opciones Horizontales */
+    .options-grid-169 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 9px;
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .option-card-btn {
+      position: relative;
+      background: var(--opt-dynamic-bg);
+      border: 1.8px solid var(--card-dynamic-border);
+      border-radius: 12px;
+      padding: 9px 9px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-align: left;
+      opacity: 1;
+      transition: all 0.45s cubic-bezier(0.2, 0.8, 0.25, 1);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.28);
+    }
+
+    .option-card-btn.anim-in {
+      animation: optSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    #opt-169-A.anim-in { animation-delay: 0.07s; }
+    #opt-169-B.anim-in { animation-delay: 0.14s; }
+    #opt-169-C.anim-in { animation-delay: 0.21s; }
+
+    @keyframes optSlideIn {
+      0% { opacity: 0; transform: translateY(10px) scale(0.96); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .option-key {
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.14);
+      font-size: 0.78rem;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      flex-shrink: 0;
+      transition: all 0.3s;
+    }
+
+    .option-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      line-height: 1.2;
+      flex: 1;
+      transition: all 0.3s;
+    }
+
+    /* EFECTO RESPUESTA CORRECTA */
+    .option-card-btn.is-correct {
+      background: linear-gradient(135deg, rgba(0, 230, 118, 0.38), rgba(0, 180, 216, 0.28)) !important;
+      border: 2px solid var(--success) !important;
+      box-shadow: 0 0 28px rgba(0, 230, 118, 0.75), inset 0 0 12px rgba(0, 230, 118, 0.3) !important;
+      transform: scale(1.035);
+      animation: gentleVictoryPulse 2.2s infinite alternate ease-in-out !important;
+      opacity: 1 !important;
+      z-index: 5;
+    }
+
+    @keyframes gentleVictoryPulse {
+      0% {
+        box-shadow: 0 0 16px rgba(0, 230, 118, 0.5), inset 0 0 8px rgba(0, 230, 118, 0.2);
+        transform: scale(1.025);
+      }
+      100% {
+        box-shadow: 0 0 32px rgba(0, 230, 118, 0.85), inset 0 0 14px rgba(0, 230, 118, 0.35);
+        transform: scale(1.035);
+      }
+    }
+
+    .option-card-btn.is-correct .option-key {
+      background: var(--success) !important;
+      color: #000 !important;
+      font-weight: 900;
+    }
+
+    .option-card-btn.is-correct .option-label {
+      color: #ffffff !important;
+      font-weight: 800;
+    }
+
+    .option-card-btn.is-correct::after {
+      content: '✓';
+      font-size: 0.95rem;
+      font-weight: 900;
+      color: var(--success);
+      margin-left: 3px;
+      filter: drop-shadow(0 0 5px var(--success));
+    }
+
+    /* EFECTO RESPUESTAS INCORRECTAS */
+    .option-card-btn.is-wrong {
+      background: rgba(255, 42, 95, 0.16) !important;
+      border: 1.5px solid rgba(255, 42, 95, 0.55) !important;
+      box-shadow: 0 0 14px rgba(255, 42, 95, 0.3) !important;
+      transform: scale(0.95);
+      opacity: 0.55 !important;
+    }
+
+    .option-card-btn.is-wrong .option-key {
+      background: rgba(255, 42, 95, 0.4) !important;
+      color: #ffd0dc !important;
+    }
+
+    .option-card-btn.is-wrong .option-label {
+      color: #fca5a5 !important;
+    }
+
+    /* Barra de Tiempo */
+    .timer-track-169 {
+      width: 100%;
+      height: 7px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 16px;
+      margin-bottom: 8px;
+      position: relative;
+    }
+
+    .timer-fill-169 {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #ffb703, #ff0055, #00e676);
+      border-radius: 999px;
+      transition: width 3s linear;
+      box-shadow: 0 0 10px rgba(255, 0, 85, 0.8);
+    }
+
+    /* ========================================================
+       BARRA DE CONTROLES: LATERAL DERECHO
+       ======================================================== */
+    .record-controls-dock {
+      width: 82px;
+      height: 100%;
+      background: rgba(6, 8, 13, 0.96);
+      border-left: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+      padding: 6px 4px;
+      z-index: 1000;
+      flex-shrink: 0;
+    }
+
+    .rec-btn {
+      background: #121724;
+      border: 1px solid #232d44;
+      color: #fff;
+      font-size: 0.62rem;
+      font-weight: 800;
+      padding: 8px 3px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      cursor: pointer;
+      text-transform: uppercase;
+      text-align: center;
+      line-height: 1;
+      transition: all 0.15s;
+    }
+    .rec-btn span.icon { font-size: 1rem; }
+    .rec-btn:active {
+      transform: scale(0.92);
+      background: var(--primary);
+      color: #000;
+    }
+
+    .autosave-indicator {
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: var(--success);
+      opacity: 0;
+      transform: translateY(-2px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      margin-top: 2px;
+    }
+    .autosave-indicator.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .btn-exit-mode {
+      background: rgba(255, 42, 95, 0.18);
+      border-color: var(--danger);
+      color: var(--danger);
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================
+       PANEL DE CONTROL
+       ======================================================== -->
+  <div class="app-container" id="panel-setup">
+    <div class="header-bar">
+      <div>
+        <div class="logo-text">⚡ QUIZ STUDIO 16:9</div>
+        <div style="font-size: 0.68rem; color: var(--text-muted);">Cinematic Pro - Edición Móvil</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:0.75rem; font-weight:800; color:var(--primary);" id="total-badge-indicator">🎯 0 PREGUNTAS</div>
+        <div id="autosave-indicator" class="autosave-indicator">💾 Guardado</div>
+      </div>
+    </div>
+
+    <!-- Personalización Visual & Tipografía Global -->
+    <div class="card-box" style="border-left: 4px solid #a855f7;">
+      <div class="card-title">🎨 Tipografía Global del Proyecto</div>
+      <label>Elige la fuente para todo el video y tarjeta</label>
+      <select id="select-global-font" onchange="changeGlobalFont(this.value)">
+        <option value="Outfit">Outfit (Moderna y Limpia)</option>
+        <option value="Syne">Syne (Geométrica / Viral)</option>
+        <option value="Helvetica">Helvetica (Clásica / Elegante)</option>
+        <option value="Playfair">Playfair Display (Sofisticada con Serif)</option>
+      </select>
+    </div>
+
+    <!-- Fondos Dinámicos de Tarjetas (Imágenes / GIFs / Videos) -->
+    <div class="card-box" style="border-left: 4px solid #00d2ff;">
+      <div class="card-title">🖼️ Fondos Dinámicos de Tarjeta (<span id="card-bgs-count">0</span>)</div>
+      <label>Sube imágenes, GIFs o videos cortos (Se pondrán al azar por pregunta y definirán los colores de borde)</label>
+      
+      <div class="file-btn-wrapper">
+        <label for="input-card-bg-files" class="file-custom-btn" id="lbl-card-bgs">+ Subir Fondos (Imagen / GIF / MP4)</label>
+        <input type="file" id="input-card-bg-files" multiple accept="image/*,video/mp4,video/webm" onchange="handleCardBackgroundsUpload(event)" />
+      </div>
+
+      <div id="card-bgs-preview-list" style="display:flex; gap:6px; overflow-x:auto; padding:4px 0;">
+        <!-- Lista horizontal de miniaturas de fondos -->
+      </div>
+    </div>
+
+    <!-- Biblioteca de Proyectos (IndexedDB) -->
+    <div class="card-box" style="border-left: 4px solid #10b981;">
+      <div class="card-title">📁 Biblioteca de Proyectos Guardados</div>
+      <label>Nombre para guardar el proyecto actual</label>
+      <div style="display:flex; gap:6px; margin-bottom:8px;">
+        <input type="text" id="project-save-name" placeholder="Ej: Trivia Cine 10 Preguntas" style="margin:0;" />
+        <button class="btn-action" style="background:var(--success); color:#000; font-weight:800; white-space:nowrap;" onclick="saveCurrentProjectToLibrary()">💾 Guardar</button>
+      </div>
+
+      <label>Proyectos en Memoria</label>
+      <div id="library-projects-list" style="display:flex; flex-direction:column; gap:5px; max-height:140px; overflow-y:auto; background:#080a11; padding:6px; border-radius:8px; border:1px solid #1a2338;">
+        <!-- Lista de Proyectos Dinámica -->
+      </div>
+    </div>
+
+    <!-- Mensajes Dinámicos / Call to Action -->
+    <div class="card-box" style="border-left: 4px solid var(--accent);">
+      <div class="card-title">💬 Mensajes Dinámicos / Llamados a la Acción</div>
+      <label>Un mensaje por línea (Se elegirá uno al azar en cada pregunta)</label>
+      <textarea id="dynamic-pill-messages" rows="4" oninput="markDirtyForAutosave()">
+🔥 ¡Pon a prueba tu mente!
+🔔 Suscríbete para más retos
+💬 Comenta cuántas acertaste
+❤️ Deja tu like si te gustó
+⭐ ¿Podrás acertar todas?</textarea>
+    </div>
+
+    <!-- Saludo / Intro -->
+    <div class="card-box" style="border-left: 4px solid var(--primary);">
+      <div class="card-title">👋 1. Pantalla de Saludo / Intro</div>
+      <label>Texto de Bienvenida</label>
+      <textarea id="fixed-intro-text" rows="2" placeholder="¡Bienvenidos a la Trivia!" oninput="markDirtyForAutosave()"></textarea>
+      
+      <div class="file-btn-wrapper">
+        <label for="input-intro-audio" class="file-custom-btn" id="lbl-intro-audio">Subir Audio Saludo (Permanente)</label>
+        <input type="file" id="input-intro-audio" accept="audio/*" onchange="handleFixedAudioUpload(event, 'audio_intro', 'lbl-intro-audio', 'Saludo')" />
+      </div>
+    </div>
+
+    <!-- Despedida / Outro -->
+    <div class="card-box" style="border-left: 4px solid var(--accent);">
+      <div class="card-title">🏁 2. Pantalla de Despedida</div>
+      <label>Texto de Cierre</label>
+      <textarea id="fixed-outro-text" rows="2" placeholder="¿Cuántas respuestas acertaste? Escríbelo en los comentarios." oninput="markDirtyForAutosave()"></textarea>
+      
+      <div class="file-btn-wrapper">
+        <label for="input-outro-audio" class="file-custom-btn" id="lbl-outro-audio">Subir Audio Despedida (Permanente)</label>
+        <input type="file" id="input-outro-audio" accept="audio/*" onchange="handleFixedAudioUpload(event, 'audio_outro', 'lbl-outro-audio', 'Despedida')" />
+      </div>
+    </div>
+
+    <!-- Video de Fondo & SFX Conteo -->
+    <div class="card-box">
+      <div class="card-title">🎮 3. Gameplay MP4 & SFX Conteo</div>
+      <label>Video MP4 de Fondo (Minecraft Loop / Gameplay)</label>
+      <div class="file-btn-wrapper">
+        <label for="input-bg-video" class="file-custom-btn" id="lbl-bg-video">Cargar Video MP4 de Fondo</label>
+        <input type="file" id="input-bg-video" accept="video/mp4" onchange="handleBgVideoSelected(event)" />
+      </div>
+
+      <label style="margin-top: 6px;">⏱️ SFX Cuenta Regresiva (3 Segundos)</label>
+      <div class="file-btn-wrapper">
+        <label for="input-sfx-timer" class="file-custom-btn" id="lbl-sfx-timer">Subir SFX Conteo (Permanente)</label>
+        <input type="file" id="input-sfx-timer" accept="audio/*" onchange="handleFixedAudioUpload(event, 'sfx_countdown', 'lbl-sfx-timer', 'SFX Conteo')" />
+      </div>
+    </div>
+
+    <!-- Banco de Preguntas -->
+    <div class="card-box">
+      <div class="card-title">📚 Banco de Preguntas (<span id="q-total-count">0</span>)</div>
+      
+      <div style="display:flex; gap:6px; margin-bottom:8px;">
+        <button class="btn-action" onclick="exportQuestionsJSON()">📥 Exportar JSON</button>
+        <button class="btn-action" onclick="document.getElementById('input-import-json').click()">📤 Importar JSON</button>
+        <input type="file" id="input-import-json" accept=".json" style="display:none;" onchange="importQuestionsJSON(event)" />
+        <button class="btn-action" style="color:var(--danger);" onclick="clearAllQuestions()">🗑️</button>
+      </div>
+
+      <div style="background: #080a11; padding: 8px; border-radius: 8px; border: 1px solid #1a2235; margin-bottom: 8px;">
+        <input type="text" id="manual-q-text" placeholder="¿Pregunta nueva?" />
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:4px;">
+          <input type="text" id="manual-opt-a" placeholder="A" />
+          <input type="text" id="manual-opt-b" placeholder="B" />
+          <input type="text" id="manual-opt-c" placeholder="C" />
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:2px;">
+          <select id="manual-correct" style="width: auto; margin:0; padding:4px;">
+            <option value="A">Correcta: A</option>
+            <option value="B">Correcta: B</option>
+            <option value="C">Correcta: C</option>
+          </select>
+          <button class="btn-action" style="background:var(--primary); color:#000;" onclick="addManualQuestion()">+ Agregar</button>
+        </div>
+      </div>
+
+      <div class="questions-scroll-area" id="questions-list-view"></div>
+    </div>
+  </div>
+
+  <div class="bottom-bar">
+    <button class="btn-launch-record" onclick="enterRecordMode()">
+      🎥 Iniciar Modo Grabación (16:9)
+    </button>
+  </div>
+
+  <!-- MODAL PARA EDITAR TEXTO DE PREGUNTA -->
+  <div class="modal-overlay" id="edit-q-modal">
+    <div class="modal-box">
+      <div class="card-title" style="color: var(--primary);">✏️ Editar Pregunta</div>
+      <input type="hidden" id="edit-q-index" />
+      <label>Texto de la Pregunta</label>
+      <input type="text" id="edit-q-text" />
+      
+      <label>Opciones</label>
+      <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:4px; margin-bottom:4px;">
+        <input type="text" id="edit-opt-a" placeholder="A" />
+        <input type="text" id="edit-opt-b" placeholder="B" />
+        <input type="text" id="edit-opt-c" placeholder="C" />
+      </div>
+
+      <label>Opción Correcta</label>
+      <select id="edit-correct">
+        <option value="A">Opción A</option>
+        <option value="B">Opción B</option>
+        <option value="C">Opción C</option>
+      </select>
+
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+        <button class="btn-action" onclick="closeEditModal()">Cancelar</button>
+        <button class="btn-action" style="background:var(--primary); color:#000;" onclick="saveEditedQuestion()">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL TÁCTIL DE MULTIMEDIA CON PREVIEWS (IMÁGENES Y AUDIOS) -->
+  <div class="modal-overlay" id="media-q-modal">
+    <div class="modal-box">
+      <div class="card-title" style="color: var(--accent);">📎 Multimedia de Pregunta #<span id="media-modal-q-num">1</span></div>
+      <input type="hidden" id="media-q-index" />
+      
+      <!-- Imagen de la Pregunta -->
+      <label style="margin-top:4px;">🖼️ Imagen Ilustrativa de la Pregunta</label>
+      <div class="preview-thumb-box" id="preview-box-q-img">
+        <img id="img-preview-q" src="" alt="Preview Pregunta" />
+      </div>
+      <div class="file-btn-wrapper">
+        <label for="input-media-img" class="file-custom-btn" id="lbl-media-img">Seleccionar Imagen Pregunta</label>
+        <input type="file" id="input-media-img" accept="image/*" onchange="handleModalImageUploaded(event, 'q')" />
+      </div>
+
+      <!-- Imagen de la Respuesta Correcta -->
+      <label style="margin-top:8px;">🎯 Imagen de la Respuesta Correcta (Se revela al final)</label>
+      <div class="preview-thumb-box" id="preview-box-ans-img">
+        <img id="img-preview-ans" src="" alt="Preview Respuesta" />
+      </div>
+      <div class="file-btn-wrapper">
+        <label for="input-media-ans-img" class="file-custom-btn" id="lbl-media-ans-img">Seleccionar Imagen Respuesta</label>
+        <input type="file" id="input-media-ans-img" accept="image/*" onchange="handleModalImageUploaded(event, 'ans')" />
+      </div>
+
+      <!-- Audio Pregunta -->
+      <label style="margin-top:8px;">🎙️ Audio de la Pregunta (ElevenLabs)</label>
+      <div style="display:flex; gap:6px;">
+        <div class="file-btn-wrapper" style="flex:1;">
+          <label for="input-media-audio-voice" class="file-custom-btn" id="lbl-media-audio-voice">Subir Audio Pregunta</label>
+          <input type="file" id="input-media-audio-voice" accept="audio/*" onchange="handleModalAudioUploaded(event, 'voice')" />
+        </div>
+        <button class="btn-action" onclick="testPlayModalAudio('voice')">▶</button>
+      </div>
+
+      <!-- Audio Respuesta -->
+      <label style="margin-top:6px;">🔊 Audio Respuesta Correcta</label>
+      <div style="display:flex; gap:6px;">
+        <div class="file-btn-wrapper" style="flex:1;">
+          <label for="input-media-audio-ans" class="file-custom-btn" id="lbl-media-audio-ans">Subir Audio Respuesta</label>
+          <input type="file" id="input-media-audio-ans" accept="audio/*" onchange="handleModalAudioUploaded(event, 'ans')" />
+        </div>
+        <button class="btn-action" onclick="testPlayModalAudio('ans')">▶</button>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:12px;">
+        <button class="btn-action" style="background:var(--primary); color:#000; width:100%;" onclick="closeMediaModal()">Listo / Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODO GRABACIÓN CON CONTROLES LATERALES DERECHOS
+       ======================================================== -->
+  <div id="record-screen">
+    <div class="stage-wrapper">
+      <div class="stage-canvas-16-9" id="stage-canvas">
+        <video class="video-background" id="video-bg-player" loop muted playsinline></video>
+        <div class="video-dark-tint"></div>
+
+        <div class="trivia-card-anchor">
+          <div class="glass-card" id="trivia-card-content">
+            <!-- El contenido dinámico de la tarjeta se inyectará aquí -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROLES LATERALES DERECHOS -->
+    <div class="record-controls-dock" id="record-controls-dock">
+      <button class="rec-btn" onclick="triggerStepIntro()">
+        <span class="icon">👋</span>
+        <span>Saludo</span>
+      </button>
+      <button class="rec-btn" onclick="triggerStepQuestion()">
+        <span class="icon">❓</span>
+        <span>Pregunta</span>
+      </button>
+      <button class="rec-btn" onclick="triggerStepCountdown()">
+        <span class="icon">⏱️</span>
+        <span>Conteo</span>
+      </button>
+      <button class="rec-btn" id="btn-next-action" onclick="triggerStepNextOrOutro()">
+        <span class="icon">⏩</span>
+        <span>Siguiente</span>
+      </button>
+      <button class="rec-btn btn-exit-mode" onclick="exitRecordMode()">
+        <span class="icon">✕</span>
+        <span>Salir</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       JAVASCRIPT
+       ======================================================== -->
+  <script>
+    const DB_NAME = 'QuizStudio169_DB';
+    const DB_VERSION = 4;
+    const STORE_PERSISTENT = 'persistent_assets';
+    const STORE_PROJECT = 'project_state';
+    const STORE_LIBRARY = 'projects_library';
+    const STORE_CARDBGS = 'card_backgrounds';
+    let dbInstance = null;
+
+    function getDB() {
+      return new Promise((resolve, reject) => {
+        if (dbInstance) return resolve(dbInstance);
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(STORE_PERSISTENT)) {
+            db.createObjectStore(STORE_PERSISTENT, { keyPath: 'key' });
+          }
+          if (!db.objectStoreNames.contains(STORE_PROJECT)) {
+            db.createObjectStore(STORE_PROJECT, { keyPath: 'key' });
+          }
+          if (!db.objectStoreNames.contains(STORE_LIBRARY)) {
+            db.createObjectStore(STORE_LIBRARY, { keyPath: 'id' });
+          }
+          if (!db.objectStoreNames.contains(STORE_CARDBGS)) {
+            db.createObjectStore(STORE_CARDBGS, { keyPath: 'id' });
+          }
+        };
+        request.onsuccess = (e) => {
+          dbInstance = e.target.result;
+          resolve(dbInstance);
+        };
+        request.onerror = (e) => reject(e.target.error);
+      });
+    }
+
+    async function saveToStore(storeName, key, value) {
+      const db = await getDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(storeName, 'readwrite');
+        tx.objectStore(storeName).put({ key, value });
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject();
+      });
+    }
+
+    async function getFromStore(storeName, key) {
+      const db = await getDB();
+      return new Promise((resolve) => {
+        const tx = db.transaction(storeName, 'readonly');
+        const req = tx.objectStore(storeName).get(key);
+        req.onsuccess = () => resolve(req.result ? req.result.value : null);
+        req.onerror = () => resolve(null);
+      });
+    }
+
+    async function saveAssetToDB(key, fileBlob) {
+      const db = await getDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_PERSISTENT, 'readwrite');
+        tx.objectStore(STORE_PERSISTENT).put({ key, blob: fileBlob });
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject();
+      });
+    }
+
+    async function getAssetFromDB(key) {
+      const db = await getDB();
+      return new Promise((resolve) => {
+        const tx = db.transaction(STORE_PERSISTENT, 'readonly');
+        const req = tx.objectStore(STORE_PERSISTENT).get(key);
+        req.onsuccess = () => resolve(req.result ? req.result.blob : null);
+        req.onerror = () => resolve(null);
+      });
+    }
+
+    /* MOTOR DE AUDIO WEB AUDIO API CON DELAYS */
+    let audioCtx = null;
+    const audioBufferStore = {};
+    let currentVoiceSource = null;
+    let currentSfxSource = null;
+    let voiceDelayTimer = null;
+    let ansVoiceDelayTimer = null;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioCtxClass();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    async function decodeAudioBlob(key, blob) {
+      if (!blob) {
+        audioBufferStore[key] = null;
+        return;
+      }
+      try {
+        const ctx = getAudioContext();
+        const arrayBuf = await blob.arrayBuffer();
+        const buffer = await ctx.decodeAudioData(arrayBuf);
+        audioBufferStore[key] = buffer;
+      } catch (err) {
+        console.warn(`Error audio [${key}]:`, err);
+      }
+    }
+
+    function playVoice(key) {
+      stopVoice();
+      const ctx = getAudioContext();
+      const buffer = audioBufferStore[key];
+      if (!buffer) return;
+
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      source.connect(ctx.destination);
+      source.start(0);
+      currentVoiceSource = source;
+    }
+
+    function stopVoice() {
+      clearTimeout(voiceDelayTimer);
+      clearTimeout(ansVoiceDelayTimer);
+      if (currentVoiceSource) {
+        try { currentVoiceSource.stop(); } catch(e){}
+        currentVoiceSource = null;
+      }
+    }
+
+    function playSfx(key, vol = 0.85) {
+      stopSfx();
+      const ctx = getAudioContext();
+      const buffer = audioBufferStore[key];
+      if (!buffer) return;
+
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      const gainNode = ctx.createGain();
+      gainNode.gain.value = vol;
+      source.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      source.start(0);
+      currentSfxSource = source;
+    }
+
+    function stopSfx() {
+      if (currentSfxSource) {
+        try { currentSfxSource.stop(); } catch(e){}
+        currentSfxSource = null;
+      }
+    }
+
+    function stopAllAudio() {
+      stopVoice();
+      stopSfx();
+    }
+
+    /* GESTIÓN DE FUENTES GLOBALES */
+    function changeGlobalFont(fontKey) {
+      let family = "'Outfit', sans-serif";
+      if (fontKey === 'Syne') family = "'Syne', sans-serif";
+      if (fontKey === 'Helvetica') family = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+      if (fontKey === 'Playfair') family = "'Playfair Display', serif";
+
+      document.documentElement.style.setProperty('--font-family', family);
+      document.body.style.fontFamily = family;
+      markDirtyForAutosave();
+    }
+
+    /* ESTADO DEL QUIZ */
+    let questionsList = [
+      { id: 1, question: "¿Qué reina financió el viaje de Cristóbal Colón en 1492?", optA: "Isabel la Católica", optB: "Catalina de Aragón", optC: "Juana la Loca", correct: "A", imgBlob: null, ansImgBlob: null, audioBlob: null, ansAudioBlob: null },
+      { id: 2, question: "¿Cuál es el planeta más grande del sistema solar?", optA: "Marte", optB: "Júpiter", optC: "Saturno", correct: "B", imgBlob: null, ansImgBlob: null, audioBlob: null, ansAudioBlob: null }
+    ];
+
+    let currentQuestionIdx = 0;
+    let countdownTimer = null;
+    let bgVideoBlob = null;
+    let cardBackgrounds = [];
+    const imgUrlCache = {};
+
+    /* ========================================================
+       EXTRACCIÓN DE COLOR DOMINANTE (CANVAS)
+       ======================================================== */
+    function extractDominantColor(blob) {
+      return new Promise((resolve) => {
+        if (!blob) {
+          return resolve({
+            border: 'rgba(0, 210, 255, 0.45)',
+            borderGlow: 'rgba(0, 210, 255, 0.25)',
+            optBg: 'rgba(16, 21, 34, 0.88)'
+          });
+        }
+
+        const isVideo = blob.type && blob.type.startsWith('video');
+        const canvas = document.createElement('canvas');
+        canvas.width = 24;
+        canvas.height = 24;
+        const ctx = canvas.getContext('2d');
+
+        const processCanvas = () => {
+          try {
+            const imgData = ctx.getImageData(0, 0, 24, 24).data;
+            let rSum = 0, gSum = 0, bSum = 0, count = 0;
+            for (let i = 0; i < imgData.length; i += 4) {
+              const r = imgData[i];
+              const g = imgData[i + 1];
+              const b = imgData[i + 2];
+              const a = imgData[i + 3];
+              if (a > 50 && (r + g + b > 35) && (r + g + b < 710)) {
+                rSum += r; gSum += g; bSum += b;
+                count++;
+              }
+            }
+            if (count === 0) { rSum = 0; gSum = 210; bSum = 255; count = 1; }
+            let rAvg = Math.round(rSum / count);
+            let gAvg = Math.round(gSum / count);
+            let bAvg = Math.round(bSum / count);
+
+            // Borde más brillante
+            const rBright = Math.min(255, Math.round(rAvg * 1.35 + 25));
+            const gBright = Math.min(255, Math.round(gAvg * 1.35 + 25));
+            const bBright = Math.min(255, Math.round(bAvg * 1.35 + 25));
+
+            // Fondo de opciones oscurecido y traslúcido
+            const rDark = Math.round(rAvg * 0.32);
+            const gDark = Math.round(gAvg * 0.32);
+            const bDark = Math.round(bAvg * 0.32);
+
+            resolve({
+              border: `rgb(${rBright}, ${gBright}, ${bBright})`,
+              borderGlow: `rgba(${rBright}, ${gBright}, ${bBright}, 0.45)`,
+              optBg: `rgba(${rDark}, ${gDark}, ${bDark}, 0.84)`
+            });
+          } catch (e) {
+            resolve({
+              border: 'rgba(0, 210, 255, 0.45)',
+              borderGlow: 'rgba(0, 210, 255, 0.25)',
+              optBg: 'rgba(16, 21, 34, 0.88)'
+            });
+          }
+        };
+
+        if (isVideo) {
+          const vid = document.createElement('video');
+          vid.muted = true;
+          vid.playsInline = true;
+          vid.crossOrigin = 'anonymous';
+          vid.src = URL.createObjectURL(blob);
+          vid.onloadeddata = () => { vid.currentTime = 0.2; };
+          vid.onseeked = () => { ctx.drawImage(vid, 0, 0, 24, 24); processCanvas(); };
+          vid.onerror = () => processCanvas();
+          setTimeout(() => processCanvas(), 800);
+        } else {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = () => { ctx.drawImage(img, 0, 0, 24, 24); processCanvas(); };
+          img.onerror = () => processCanvas();
+          img.src = URL.createObjectURL(blob);
+        }
+      });
+    }
+
+    /* ========================================================
+       FONDOS DE TARJETA DINÁMICOS
+       ======================================================== */
+    async function handleCardBackgroundsUpload(event) {
+      const files = Array.from(event.target.files);
+      if (!files.length) return;
+
+      const db = await getDB();
+      for (const file of files) {
+        const bgItem = {
+          id: 'cardbg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+          name: file.name,
+          blob: file,
+          type: file.type
+        };
+        cardBackgrounds.push(bgItem);
+        const tx = db.transaction(STORE_CARDBGS, 'readwrite');
+        tx.objectStore(STORE_CARDBGS).put(bgItem);
+      }
+
+      renderCardBackgroundsList();
+    }
+
+    async function loadStoredCardBackgrounds() {
+      const db = await getDB();
+      const tx = db.transaction(STORE_CARDBGS, 'readonly');
+      const req = tx.objectStore(STORE_CARDBGS).getAll();
+      req.onsuccess = () => {
+        cardBackgrounds = req.result || [];
+        renderCardBackgroundsList();
+      };
+    }
+
+    function renderCardBackgroundsList() {
+      const container = document.getElementById('card-bgs-preview-list');
+      document.getElementById('card-bgs-count').textContent = cardBackgrounds.length;
+      if (!container) return;
+
+      if (cardBackgrounds.length === 0) {
+        container.innerHTML = '<div style="font-size:0.68rem; color:var(--text-muted);">Sin fondos añadidos.</div>';
+        return;
+      }
+
+      container.innerHTML = '';
+      cardBackgrounds.forEach((bg, idx) => {
+        const thumb = document.createElement('div');
+        thumb.style.cssText = 'position:relative; width:55px; height:45px; border-radius:6px; overflow:hidden; border:1px solid #2a3a58; flex-shrink:0; background:#000;';
+        
+        let mediaTag = '';
+        const url = URL.createObjectURL(bg.blob);
+        if (bg.type && bg.type.startsWith('video')) {
+          mediaTag = `<video src="${url}" style="width:100%; height:100%; object-fit:cover;" muted></video>`;
+        } else {
+          mediaTag = `<img src="${url}" style="width:100%; height:100%; object-fit:cover;" />`;
+        }
+
+        thumb.innerHTML = `
+          ${mediaTag}
+          <button onclick="deleteCardBg(${idx})" style="position:absolute; top:1px; right:1px; background:rgba(0,0,0,0.7); color:#ff2a5f; border:none; border-radius:3px; font-size:9px; padding:1px 3px; cursor:pointer;">✕</button>
+        `;
+        container.appendChild(thumb);
+      });
+    }
+
+    async function deleteCardBg(idx) {
+      const item = cardBackgrounds[idx];
+      if (!item) return;
+      const db = await getDB();
+      const tx = db.transaction(STORE_CARDBGS, 'readwrite');
+      tx.objectStore(STORE_CARDBGS).delete(item.id);
+      cardBackgrounds.splice(idx, 1);
+      renderCardBackgroundsList();
+    }
+
+    function getRandomCardBackground() {
+      if (!cardBackgrounds || cardBackgrounds.length === 0) return null;
+      return cardBackgrounds[Math.floor(Math.random() * cardBackgrounds.length)];
+    }
+
+    /* RENDER DE TARJETA CON TRANSICIÓN */
+    let cardTransitionTimer = null;
+    function renderCardContent(html, colorData = null, cardBgObj = null) {
+      const card = document.getElementById('trivia-card-content');
+      if (!card) return;
+
+      clearTimeout(cardTransitionTimer);
+      card.classList.remove('card-transition-in');
+
+      const hasContent = card.innerHTML.trim().length > 0;
+
+      const swapIn = () => {
+        if (colorData) {
+          card.style.setProperty('--card-dynamic-border', colorData.border);
+          card.style.setProperty('--card-dynamic-glow', colorData.borderGlow);
+          card.style.setProperty('--opt-dynamic-bg', colorData.optBg);
+        } else {
+          card.style.setProperty('--card-dynamic-border', 'rgba(255, 255, 255, 0.2)');
+          card.style.setProperty('--card-dynamic-glow', 'rgba(0, 210, 255, 0.2)');
+          card.style.setProperty('--opt-dynamic-bg', 'rgba(16, 21, 34, 0.88)');
+        }
+
+        let bgMediaHtml = '';
+        if (cardBgObj) {
+          const bgUrl = URL.createObjectURL(cardBgObj.blob);
+          if (cardBgObj.type && cardBgObj.type.startsWith('video')) {
+            bgMediaHtml = `<video class="card-dynamic-bg-media" src="${bgUrl}" autoplay loop muted playsinline></video><div class="card-dynamic-bg-tint"></div>`;
+          } else {
+            bgMediaHtml = `<img class="card-dynamic-bg-media" src="${bgUrl}" alt="Fondo" /><div class="card-dynamic-bg-tint"></div>`;
+          }
+        }
+
+        card.innerHTML = `${bgMediaHtml}<div class="card-inner-content">${html}</div>`;
+        void card.offsetWidth;
+        card.classList.remove('card-transition-out');
+        card.classList.add('card-transition-in');
+      };
+
+      if (hasContent) {
+        card.classList.add('card-transition-out');
+        cardTransitionTimer = setTimeout(swapIn, 160);
+      } else {
+        swapIn();
+      }
+    }
+
+    async function handleFixedAudioUpload(event, dbKey, labelId, displayName) {
+      getAudioContext();
+      const file = event.target.files[0];
+      if (!file) return;
+
+      await saveAssetToDB(dbKey, file);
+      await decodeAudioBlob(dbKey, file);
+
+      const lbl = document.getElementById(labelId);
+      lbl.textContent = `✓ ${displayName}: ${file.name}`;
+      lbl.classList.add('loaded');
+    }
+
+    function handleBgVideoSelected(event) {
+      const file = event.target.files[0];
+      const lbl = document.getElementById('lbl-bg-video');
+      if (file) {
+        bgVideoBlob = file;
+        lbl.textContent = `✓ Video: ${file.name}`;
+        lbl.classList.add('loaded');
+      }
+    }
+
+    function updateBadgeIndicator() {
+      const total = questionsList.length;
+      document.getElementById('q-total-count').textContent = total;
+      document.getElementById('total-badge-indicator').textContent = `🎯 ${total} PREGUNTAS`;
+    }
+
+    /* AUTOGUARDADO PERIÓDICO */
+    let autosaveTimer = null;
+    let autosaveDirty = false;
+    let autosaveInProgress = false;
+    const AUTOSAVE_INTERVAL_MS = 6000;
+
+    function markDirtyForAutosave() {
+      autosaveDirty = true;
+    }
+
+    async function performAutosave() {
+      if (!autosaveDirty || autosaveInProgress) return;
+      autosaveInProgress = true;
+      try {
+        const snapshot = {
+          font: document.getElementById('select-global-font').value,
+          dynamicPillMessages: document.getElementById('dynamic-pill-messages').value,
+          fixedIntroText: document.getElementById('fixed-intro-text').value,
+          fixedOutroText: document.getElementById('fixed-outro-text').value,
+          questions: questionsList.map(q => ({
+            id: q.id,
+            question: q.question,
+            optA: q.optA,
+            optB: q.optB,
+            optC: q.optC,
+            correct: q.correct,
+            imgBlob: q.imgBlob || null,
+            ansImgBlob: q.ansImgBlob || null,
+            audioBlob: q.audioBlob || null,
+            ansAudioBlob: q.ansAudioBlob || null
+          }))
+        };
+        await saveToStore(STORE_PROJECT, 'autosave_v4', snapshot);
+        autosaveDirty = false;
+        showAutosaveIndicator();
+      } catch (err) {
+        console.warn('No se pudo autoguardar:', err);
+      } finally {
+        autosaveInProgress = false;
+      }
+    }
+
+    function showAutosaveIndicator() {
+      const el = document.getElementById('autosave-indicator');
+      if (!el) return;
+      el.classList.add('show');
+      clearTimeout(showAutosaveIndicator._t);
+      showAutosaveIndicator._t = setTimeout(() => el.classList.remove('show'), 1500);
+    }
+
+    function startAutosaveLoop() {
+      clearInterval(autosaveTimer);
+      autosaveTimer = setInterval(performAutosave, AUTOSAVE_INTERVAL_MS);
+      window.addEventListener('beforeunload', () => {
+        if (autosaveDirty) performAutosave();
+      });
+    }
+
+    async function restoreAutosavedProject() {
+      const snapshot = await getFromStore(STORE_PROJECT, 'autosave_v4');
+      if (!snapshot) return false;
+
+      if (snapshot.font) {
+        document.getElementById('select-global-font').value = snapshot.font;
+        changeGlobalFont(snapshot.font);
+      }
+      if (snapshot.dynamicPillMessages) document.getElementById('dynamic-pill-messages').value = snapshot.dynamicPillMessages;
+      if (snapshot.fixedIntroText) document.getElementById('fixed-intro-text').value = snapshot.fixedIntroText;
+      if (snapshot.fixedOutroText) document.getElementById('fixed-outro-text').value = snapshot.fixedOutroText;
+
+      if (Array.isArray(snapshot.questions) && snapshot.questions.length > 0) {
+        questionsList = snapshot.questions;
+        for (let i = 0; i < questionsList.length; i++) {
+          if (questionsList[i].audioBlob) await decodeAudioBlob(`q_${i}_voice`, questionsList[i].audioBlob);
+          if (questionsList[i].ansAudioBlob) await decodeAudioBlob(`q_${i}_ans`, questionsList[i].ansAudioBlob);
+        }
+      }
+      return true;
+    }
+
+    /* BIBLIOTECA DE PROYECTOS */
+    async function saveCurrentProjectToLibrary() {
+      const inputName = document.getElementById('project-save-name');
+      const name = inputName.value.trim() || `Proyecto (${questionsList.length} preg.) - ${new Date().toLocaleDateString()}`;
+      const db = await getDB();
+      const projId = 'proj_' + Date.now();
+
+      const projectData = {
+        id: projId,
+        name: name,
+        createdAt: new Date().toLocaleString(),
+        font: document.getElementById('select-global-font').value,
+        dynamicPillMessages: document.getElementById('dynamic-pill-messages').value,
+        fixedIntroText: document.getElementById('fixed-intro-text').value,
+        fixedOutroText: document.getElementById('fixed-outro-text').value,
+        questions: questionsList.map(q => ({ ...q }))
+      };
+
+      return new Promise((resolve) => {
+        const tx = db.transaction(STORE_LIBRARY, 'readwrite');
+        tx.objectStore(STORE_LIBRARY).put(projectData);
+        tx.oncomplete = () => {
+          inputName.value = '';
+          renderLibraryProjectsList();
+          alert(`✅ ¡Proyecto "${name}" guardado con éxito!`);
+          resolve();
+        };
+      });
+    }
+
+    async function renderLibraryProjectsList() {
+      const db = await getDB();
+      const listContainer = document.getElementById('library-projects-list');
+      
+      const tx = db.transaction(STORE_LIBRARY, 'readonly');
+      const req = tx.objectStore(STORE_LIBRARY).getAll();
+      
+      req.onsuccess = () => {
+        const projects = req.result || [];
+        if (projects.length === 0) {
+          listContainer.innerHTML = '<div style="font-size:0.68rem; color:var(--text-muted); text-align:center; padding:6px;">No hay proyectos guardados.</div>';
+          return;
+        }
+
+        listContainer.innerHTML = '';
+        projects.reverse().forEach(p => {
+          const item = document.createElement('div');
+          item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:#111625; padding:6px 8px; border-radius:6px; border:1px solid #1a243a;';
+          item.innerHTML = `
+            <div style="flex:1; overflow:hidden; margin-right:6px;">
+              <div style="font-size:0.72rem; font-weight:800; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(p.name)}</div>
+              <div style="font-size:0.6rem; color:var(--text-muted);">${p.createdAt} • ${p.questions.length} preg.</div>
+            </div>
+            <div style="display:flex; gap:4px;">
+              <button class="btn-action" style="padding:3px 7px; font-size:0.65rem; background:var(--primary); color:#000;" onclick="loadProjectFromLibrary('${p.id}')">📂 Cargar</button>
+              <button class="btn-action" style="padding:3px 7px; font-size:0.65rem; color:var(--danger);" onclick="deleteProjectFromLibrary('${p.id}')">🗑️</button>
+            </div>
+          `;
+          listContainer.appendChild(item);
+        });
+      };
+    }
+
+    async function loadProjectFromLibrary(projId) {
+      const db = await getDB();
+      const tx = db.transaction(STORE_LIBRARY, 'readonly');
+      const req = tx.objectStore(STORE_LIBRARY).get(projId);
+
+      req.onsuccess = async () => {
+        const p = req.result;
+        if (!p) return;
+
+        if (confirm(`¿Cargar el proyecto "${p.name}"?`)) {
+          if (p.font) {
+            document.getElementById('select-global-font').value = p.font;
+            changeGlobalFont(p.font);
+          }
+          if (p.dynamicPillMessages) document.getElementById('dynamic-pill-messages').value = p.dynamicPillMessages;
+          if (p.fixedIntroText) document.getElementById('fixed-intro-text').value = p.fixedIntroText;
+          if (p.fixedOutroText) document.getElementById('fixed-outro-text').value = p.fixedOutroText;
+
+          questionsList = p.questions || [];
+          for (let i = 0; i < questionsList.length; i++) {
+            delete imgUrlCache[`q_${i}`];
+            delete imgUrlCache[`ans_q_${i}`];
+            if (questionsList[i].audioBlob) await decodeAudioBlob(`q_${i}_voice`, questionsList[i].audioBlob);
+            if (questionsList[i].ansAudioBlob) await decodeAudioBlob(`q_${i}_ans`, questionsList[i].ansAudioBlob);
+          }
+
+          renderQuestionsList();
+          markDirtyForAutosave();
+          alert(`✅ Proyecto "${p.name}" cargado.`);
+        }
+      };
+    }
+
+    async function deleteProjectFromLibrary(projId) {
+      if (!confirm('¿Eliminar este proyecto?')) return;
+      const db = await getDB();
+      const tx = db.transaction(STORE_LIBRARY, 'readwrite');
+      tx.objectStore(STORE_LIBRARY).delete(projId);
+      tx.oncomplete = () => renderLibraryProjectsList();
+    }
+
+    /* RENDER DE LA LISTA DE PREGUNTAS */
+    function renderQuestionsList() {
+      const container = document.getElementById('questions-list-view');
+      updateBadgeIndicator();
+
+      if (questionsList.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:15px; font-size:0.7rem; color:var(--text-muted);">No hay preguntas cargadas.</div>';
+        return;
+      }
+
+      container.innerHTML = '';
+      questionsList.forEach((q, idx) => {
+        const item = document.createElement('div');
+        item.className = 'question-list-item';
+        item.innerHTML = `
+          <div class="q-item-title">${idx + 1}. ${escapeHtml(q.question)}</div>
+          <div style="display:flex; gap:3px;">
+            <span class="q-badge ${q.imgBlob ? 'active' : ''}">🖼️</span>
+            <span class="q-badge ${q.ansImgBlob ? 'active' : ''}">🎯</span>
+            <span class="q-badge ${q.audioBlob ? 'active' : ''}">🎙️</span>
+            <span class="q-badge ${q.ansAudioBlob ? 'active' : ''}">🔊</span>
+            <button class="btn-action" style="padding:2px 6px; font-size:0.65rem;" title="Editar texto" onclick="openEditModal(${idx})">✏️</button>
+            <button class="btn-action" style="padding:2px 6px; font-size:0.65rem;" title="Adjuntar multimedia" onclick="openMediaModal(${idx})">📎</button>
+            <button class="btn-action" style="padding:2px 6px; font-size:0.65rem; color:var(--danger);" onclick="deleteQuestion(${idx})">✕</button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    /* MODAL DE EDICIÓN DE TEXTO */
+    function openEditModal(idx) {
+      const q = questionsList[idx];
+      if (!q) return;
+      document.getElementById('edit-q-index').value = idx;
+      document.getElementById('edit-q-text').value = q.question;
+      document.getElementById('edit-opt-a').value = q.optA;
+      document.getElementById('edit-opt-b').value = q.optB;
+      document.getElementById('edit-opt-c').value = q.optC;
+      document.getElementById('edit-correct').value = q.correct || 'A';
+      document.getElementById('edit-q-modal').style.display = 'flex';
+    }
+
+    function closeEditModal() {
+      document.getElementById('edit-q-modal').style.display = 'none';
+    }
+
+    function saveEditedQuestion() {
+      const idx = parseInt(document.getElementById('edit-q-index').value, 10);
+      if (isNaN(idx) || !questionsList[idx]) return;
+
+      const text = document.getElementById('edit-q-text').value.trim();
+      const a = document.getElementById('edit-opt-a').value.trim();
+      const b = document.getElementById('edit-opt-b').value.trim();
+      const c = document.getElementById('edit-opt-c').value.trim();
+      const correct = document.getElementById('edit-correct').value;
+
+      if (!text || !a || !b || !c) {
+        alert('Completa la pregunta y las 3 opciones.');
+        return;
+      }
+
+      questionsList[idx].question = text;
+      questionsList[idx].optA = a;
+      questionsList[idx].optB = b;
+      questionsList[idx].optC = c;
+      questionsList[idx].correct = correct;
+
+      closeEditModal();
+      renderQuestionsList();
+      markDirtyForAutosave();
+    }
+
+    /* MODAL DE MULTIMEDIA TÁCTIL CON PREVIEWS */
+    function openMediaModal(idx) {
+      const q = questionsList[idx];
+      if (!q) return;
+
+      getAudioContext();
+      document.getElementById('media-q-index').value = idx;
+      document.getElementById('media-modal-q-num').textContent = idx + 1;
+
+      // Preview Imagen Pregunta
+      const previewBoxQ = document.getElementById('preview-box-q-img');
+      const imgPreviewQ = document.getElementById('img-preview-q');
+      const lblImg = document.getElementById('lbl-media-img');
+      if (q.imgBlob) {
+        imgPreviewQ.src = URL.createObjectURL(q.imgBlob);
+        previewBoxQ.style.display = 'flex';
+        lblImg.textContent = '✓ Imagen Pregunta Lista (Cambiar)';
+        lblImg.classList.add('loaded');
+      } else {
+        imgPreviewQ.src = '';
+        previewBoxQ.style.display = 'none';
+        lblImg.textContent = 'Seleccionar Imagen Pregunta';
+        lblImg.classList.remove('loaded');
+      }
+
+      // Preview Imagen Respuesta
+      const previewBoxAns = document.getElementById('preview-box-ans-img');
+      const imgPreviewAns = document.getElementById('img-preview-ans');
+      const lblAnsImg = document.getElementById('lbl-media-ans-img');
+      if (q.ansImgBlob) {
+        imgPreviewAns.src = URL.createObjectURL(q.ansImgBlob);
+        previewBoxAns.style.display = 'flex';
+        lblAnsImg.textContent = '✓ Imagen Respuesta Lista (Cambiar)';
+        lblAnsImg.classList.add('loaded');
+      } else {
+        imgPreviewAns.src = '';
+        previewBoxAns.style.display = 'none';
+        lblAnsImg.textContent = 'Seleccionar Imagen Respuesta';
+        lblAnsImg.classList.remove('loaded');
+      }
+
+      // Audios
+      const lblVoice = document.getElementById('lbl-media-audio-voice');
+      lblVoice.textContent = q.audioBlob ? '✓ Audio Pregunta Listo' : 'Subir Audio Pregunta';
+      lblVoice.classList.toggle('loaded', !!q.audioBlob);
+
+      const lblAns = document.getElementById('lbl-media-audio-ans');
+      lblAns.textContent = q.ansAudioBlob ? '✓ Audio Respuesta Listo' : 'Subir Audio Respuesta';
+      lblAns.classList.toggle('loaded', !!q.ansAudioBlob);
+
+      document.getElementById('media-q-modal').style.display = 'flex';
+    }
+
+    function closeMediaModal() {
+      stopAllAudio();
+      document.getElementById('media-q-modal').style.display = 'none';
+      renderQuestionsList();
+      markDirtyForAutosave();
+    }
+
+    function handleModalImageUploaded(event, type) {
+      const idx = parseInt(document.getElementById('media-q-index').value, 10);
+      const file = event.target.files[0];
+      if (!file || isNaN(idx) || !questionsList[idx]) return;
+
+      if (type === 'q') {
+        questionsList[idx].imgBlob = file;
+        delete imgUrlCache[`q_${idx}`];
+        const previewBoxQ = document.getElementById('preview-box-q-img');
+        const imgPreviewQ = document.getElementById('img-preview-q');
+        imgPreviewQ.src = URL.createObjectURL(file);
+        previewBoxQ.style.display = 'flex';
+
+        const lbl = document.getElementById('lbl-media-img');
+        lbl.textContent = `✓ Imagen: ${file.name}`;
+        lbl.classList.add('loaded');
+      } else {
+        questionsList[idx].ansImgBlob = file;
+        delete imgUrlCache[`ans_q_${idx}`];
+        const previewBoxAns = document.getElementById('preview-box-ans-img');
+        const imgPreviewAns = document.getElementById('img-preview-ans');
+        imgPreviewAns.src = URL.createObjectURL(file);
+        previewBoxAns.style.display = 'flex';
+
+        const lbl = document.getElementById('lbl-media-ans-img');
+        lbl.textContent = `✓ Imagen Respuesta: ${file.name}`;
+        lbl.classList.add('loaded');
+      }
+      markDirtyForAutosave();
+    }
+
+    async function handleModalAudioUploaded(event, type) {
+      const idx = parseInt(document.getElementById('media-q-index').value, 10);
+      const file = event.target.files[0];
+      if (!file || isNaN(idx) || !questionsList[idx]) return;
+
+      if (type === 'voice') {
+        questionsList[idx].audioBlob = file;
+        await decodeAudioBlob(`q_${idx}_voice`, file);
+        const lbl = document.getElementById('lbl-media-audio-voice');
+        lbl.textContent = `✓ Pregunta: ${file.name}`;
+        lbl.classList.add('loaded');
+      } else {
+        questionsList[idx].ansAudioBlob = file;
+        await decodeAudioBlob(`q_${idx}_ans`, file);
+        const lbl = document.getElementById('lbl-media-audio-ans');
+        lbl.textContent = `✓ Respuesta: ${file.name}`;
+        lbl.classList.add('loaded');
+      }
+      markDirtyForAutosave();
+    }
+
+    function testPlayModalAudio(type) {
+      const idx = parseInt(document.getElementById('media-q-index').value, 10);
+      if (isNaN(idx)) return;
+      if (type === 'voice') {
+        playVoice(`q_${idx}_voice`);
+      } else {
+        playVoice(`q_${idx}_ans`);
+      }
+    }
+
+    function addManualQuestion() {
+      const text = document.getElementById('manual-q-text').value.trim();
+      const a = document.getElementById('manual-opt-a').value.trim();
+      const b = document.getElementById('manual-opt-b').value.trim();
+      const c = document.getElementById('manual-opt-c').value.trim();
+      const correct = document.getElementById('manual-correct').value;
+
+      if (!text || !a || !b || !c) {
+        alert('Completa la pregunta y las 3 opciones.');
+        return;
+      }
+
+      questionsList.push({
+        id: Date.now(),
+        question: text,
+        optA: a,
+        optB: b,
+        optC: c,
+        correct,
+        imgBlob: null,
+        ansImgBlob: null,
+        audioBlob: null,
+        ansAudioBlob: null
+      });
+
+      document.getElementById('manual-q-text').value = '';
+      document.getElementById('manual-opt-a').value = '';
+      document.getElementById('manual-opt-b').value = '';
+      document.getElementById('manual-opt-c').value = '';
+      renderQuestionsList();
+      markDirtyForAutosave();
+    }
+
+    function deleteQuestion(idx) {
+      questionsList.splice(idx, 1);
+      renderQuestionsList();
+      markDirtyForAutosave();
+    }
+
+    function clearAllQuestions() {
+      if (confirm('¿Vaciar toda la lista?')) {
+        questionsList = [];
+        renderQuestionsList();
+        markDirtyForAutosave();
+      }
+    }
+
+    function exportQuestionsJSON() {
+      const cleanData = questionsList.map(q => ({
+        id: q.id,
+        question: q.question,
+        optA: q.optA,
+        optB: q.optB,
+        optC: q.optC,
+        correct: q.correct
+      }));
+      const blob = new Blob([JSON.stringify(cleanData, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `Trivia_${questionsList.length}_preguntas.json`;
+      a.click();
+    }
+
+    function importQuestionsJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (Array.isArray(parsed)) {
+            questionsList = parsed.map((item, i) => ({
+              id: item.id || (i + 1),
+              question: item.question || '',
+              optA: item.optA || '',
+              optB: item.optB || '',
+              optC: item.optC || '',
+              correct: item.correct || 'A',
+              imgBlob: null,
+              ansImgBlob: null,
+              audioBlob: null,
+              ansAudioBlob: null
+            }));
+            renderQuestionsList();
+            markDirtyForAutosave();
+            alert(`✅ ¡${questionsList.length} preguntas importadas!`);
+          }
+        } catch (err) {
+          alert('Archivo JSON no válido.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    /* MODO GRABACIÓN (16:9) */
+    async function enterRecordMode() {
+      if (questionsList.length === 0) {
+        alert('Agrega al menos una pregunta antes de grabar.');
+        return;
+      }
+
+      getAudioContext();
+
+      const el = document.documentElement;
+      if (el.requestFullscreen) {
+        await el.requestFullscreen().catch(()=>{});
+      } else if (el.webkitRequestFullscreen) {
+        await el.webkitRequestFullscreen();
+      }
+
+      if (screen.orientation && screen.orientation.lock) {
+        screen.orientation.lock('landscape').catch(()=>{});
+      }
+
+      for (let i = 0; i < questionsList.length; i++) {
+        if (questionsList[i].audioBlob && !audioBufferStore[`q_${i}_voice`]) {
+          await decodeAudioBlob(`q_${i}_voice`, questionsList[i].audioBlob);
+        }
+        if (questionsList[i].ansAudioBlob && !audioBufferStore[`q_${i}_ans`]) {
+          await decodeAudioBlob(`q_${i}_ans`, questionsList[i].ansAudioBlob);
+        }
+      }
+
+      const videoEl = document.getElementById('video-bg-player');
+      if (bgVideoBlob) {
+        videoEl.src = URL.createObjectURL(bgVideoBlob);
+        videoEl.play().catch(()=>{});
+      } else {
+        videoEl.removeAttribute('src');
+      }
+
+      preloadAllQuestionImages();
+
+      currentQuestionIdx = 0;
+      document.getElementById('record-screen').style.display = 'flex';
+      triggerStepIntro();
+    }
+
+    function exitRecordMode() {
+      stopAllAudio();
+      clearTimeout(countdownTimer);
+      document.getElementById('record-screen').style.display = 'none';
+      document.getElementById('video-bg-player').pause();
+
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(()=>{});
+      }
+    }
+
+    function getRandomPillMessage() {
+      const raw = document.getElementById('dynamic-pill-messages').value;
+      const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+      if (lines.length === 0) return '🔥 DESAFÍO CULTURA GENERAL';
+      return lines[Math.floor(Math.random() * lines.length)];
+    }
+
+    /* PASO 1: INTRO */
+    function triggerStepIntro() {
+      stopAllAudio();
+      clearTimeout(countdownTimer);
+
+      const introText = document.getElementById('fixed-intro-text').value || '¡Bienvenidos a la Trivia!';
+      const total = questionsList.length;
+
+      renderCardContent(`
+        <div class="card-top-indicator">
+          <div class="pill-badge pill-genre">✨ RETO VIRAL</div>
+          <div class="pill-badge pill-counter">🎯 ${total} PREGUNTAS</div>
+        </div>
+        <div class="question-text-content full-width-text">${escapeHtml(introText)}</div>
+      `);
+
+      playVoice('audio_intro');
+    }
+
+    function getPreloadedImageUrl(cacheKey, blob) {
+      return new Promise((resolve) => {
+        if (!blob) return resolve('');
+        if (imgUrlCache[cacheKey]) {
+          return resolve(imgUrlCache[cacheKey]);
+        }
+        const url = URL.createObjectURL(blob);
+        const preloadImg = new Image();
+        preloadImg.onload = () => {
+          imgUrlCache[cacheKey] = url;
+          resolve(url);
+        };
+        preloadImg.onerror = () => resolve(url);
+        preloadImg.src = url;
+      });
+    }
+
+    function preloadAllQuestionImages() {
+      questionsList.forEach((q, idx) => {
+        if (q.imgBlob) getPreloadedImageUrl(`q_${idx}`, q.imgBlob);
+        if (q.ansImgBlob) getPreloadedImageUrl(`ans_q_${idx}`, q.ansImgBlob);
+      });
+    }
+
+    /* PASO 2: MOSTRAR PREGUNTA CON COLOR DINÁMICO Y PROPORCIÓN 8:5 */
+    async function triggerStepQuestion() {
+      stopAllAudio();
+      clearTimeout(countdownTimer);
+
+      if (currentQuestionIdx >= questionsList.length) {
+        triggerStepOutro();
+        return;
+      }
+
+      const q = questionsList[currentQuestionIdx];
+      const total = questionsList.length;
+      const myIdx = currentQuestionIdx;
+      const dynamicPill = getRandomPillMessage();
+
+      // Elegir fondo de tarjeta al azar y extraer color
+      const chosenCardBg = getRandomCardBackground();
+      const colorData = await extractDominantColor(chosenCardBg ? chosenCardBg.blob : (q.imgBlob || null));
+
+      let layoutHtml = '';
+      if (q.imgBlob || q.ansImgBlob) {
+        const qImgUrl = q.imgBlob ? await getPreloadedImageUrl(`q_${myIdx}`, q.imgBlob) : '';
+        const ansImgUrl = q.ansImgBlob ? await getPreloadedImageUrl(`ans_q_${myIdx}`, q.ansImgBlob) : '';
+
+        if (myIdx !== currentQuestionIdx) return;
+
+        layoutHtml = `
+          <div class="question-layout">
+            <div class="hero-image-wrap">
+              ${qImgUrl ? `<img id="hero-img-q" class="hero-img-layer" src="${qImgUrl}" alt="Pregunta" />` : ''}
+              ${ansImgUrl ? `<img id="hero-img-ans" class="hero-img-layer" src="${ansImgUrl}" alt="Respuesta" />` : ''}
+            </div>
+            <div class="question-text-content">${escapeHtml(q.question)}</div>
+          </div>
+        `;
+      } else {
+        layoutHtml = `
+          <div class="question-text-content full-width-text" style="margin: 6px 0 10px 0;">
+            ${escapeHtml(q.question)}
+          </div>
+        `;
+      }
+
+      renderCardContent(`
+        <div class="card-top-indicator">
+          <div class="pill-badge pill-genre">${escapeHtml(dynamicPill)}</div>
+          <div class="pill-badge pill-counter">PREGUNTA ${currentQuestionIdx + 1} / ${total}</div>
+        </div>
+
+        ${layoutHtml}
+
+        <div class="options-grid-169">
+          <div class="option-card-btn anim-in" id="opt-169-A">
+            <div class="option-key">A</div>
+            <div class="option-label">${escapeHtml(q.optA)}</div>
+          </div>
+          <div class="option-card-btn anim-in" id="opt-169-B">
+            <div class="option-key">B</div>
+            <div class="option-label">${escapeHtml(q.optB)}</div>
+          </div>
+          <div class="option-card-btn anim-in" id="opt-169-C">
+            <div class="option-key">C</div>
+            <div class="option-label">${escapeHtml(q.optC)}</div>
+          </div>
+        </div>
+
+        <div class="timer-track-169" id="timer-bar-wrap" style="display:none;">
+          <div class="timer-fill-169" id="timer-fill-node"></div>
+        </div>
+      `, colorData, chosenCardBg);
+
+      // Precargar la siguiente
+      const nextQ = questionsList[currentQuestionIdx + 1];
+      if (nextQ) {
+        if (nextQ.imgBlob) getPreloadedImageUrl(`q_${currentQuestionIdx + 1}`, nextQ.imgBlob);
+        if (nextQ.ansImgBlob) getPreloadedImageUrl(`ans_q_${currentQuestionIdx + 1}`, nextQ.ansImgBlob);
+      }
+
+      const nextBtn = document.getElementById('btn-next-action');
+      if (currentQuestionIdx === questionsList.length - 1) {
+        nextBtn.innerHTML = '<span class="icon">👋</span><span>Despedida</span>';
+      } else {
+        nextBtn.innerHTML = '<span class="icon">⏩</span><span>Siguiente</span>';
+      }
+
+      // DELAY DE 0.45 SEGUNDOS PARA EL AUDIO DE LA PREGUNTA
+      voiceDelayTimer = setTimeout(() => {
+        playVoice(`q_${currentQuestionIdx}_voice`);
+      }, 450);
+    }
+
+    /* PASO 3: CONTEO (3 SEGUNDOS) */
+    function triggerStepCountdown() {
+      const timerWrap = document.getElementById('timer-bar-wrap');
+      const timerFill = document.getElementById('timer-fill-node');
+      if (!timerWrap || !timerFill) return;
+
+      timerWrap.style.display = 'block';
+      timerFill.style.transition = 'none';
+      timerFill.style.width = '100%';
+      void timerFill.offsetWidth;
+
+      timerFill.style.transition = 'width 3s linear';
+      timerFill.style.width = '0%';
+
+      clearTimeout(countdownTimer);
+      playSfx('sfx_countdown', 0.9);
+
+      countdownTimer = setTimeout(() => {
+        revealAnswerAndPlayAudio();
+      }, 3000);
+    }
+
+    function revealAnswerAndPlayAudio() {
+      const q = questionsList[currentQuestionIdx];
+      if (!q) return;
+
+      const card = document.getElementById('trivia-card-content');
+      if (card) {
+        card.classList.remove('reveal-flash');
+        void card.offsetWidth;
+        card.classList.add('reveal-flash');
+      }
+
+      // Crossfade de imagen a la de respuesta correcta si existe
+      if (q.ansImgBlob) {
+        const heroImgQ = document.getElementById('hero-img-q');
+        const heroImgAns = document.getElementById('hero-img-ans');
+        if (heroImgQ) heroImgQ.style.opacity = '0';
+        if (heroImgAns) heroImgAns.style.opacity = '1';
+      }
+
+      ['A', 'B', 'C'].forEach(optKey => {
+        const btn = document.getElementById(`opt-169-${optKey}`);
+        if (!btn) return;
+        
+        btn.classList.remove('anim-in');
+
+        if (optKey === q.correct) {
+          btn.classList.add('is-correct');
+        } else {
+          btn.classList.add('is-wrong');
+        }
+      });
+
+      // DELAY DE 0.10 SEGUNDOS PARA EL AUDIO DE LA RESPUESTA
+      ansVoiceDelayTimer = setTimeout(() => {
+        playVoice(`q_${currentQuestionIdx}_ans`);
+      }, 100);
+    }
+
+    /* PASO 4: SIGUIENTE O FINAL */
+    function triggerStepNextOrOutro() {
+      currentQuestionIdx++;
+      if (currentQuestionIdx < questionsList.length) {
+        triggerStepQuestion();
+      } else {
+        triggerStepOutro();
+      }
+    }
+
+    function triggerStepOutro() {
+      stopAllAudio();
+      clearTimeout(countdownTimer);
+
+      const outroText = document.getElementById('fixed-outro-text').value || '¡Gracias por participar! Suscríbete para más trivias diarias.';
+      const total = questionsList.length;
+
+      renderCardContent(`
+        <div class="card-top-indicator">
+          <div class="pill-badge pill-genre">🏁 RESULTADOS</div>
+          <div class="pill-badge pill-counter">🎯 ${total} COMPLETADAS</div>
+        </div>
+        <div class="question-text-content full-width-text">${escapeHtml(outroText)}</div>
+      `);
+
+      playVoice('audio_outro');
+    }
+
+    /* INICIALIZACIÓN */
+    window.addEventListener('DOMContentLoaded', async () => {
+      const restored = await restoreAutosavedProject();
+
+      const introBlob = await getAssetFromDB('audio_intro');
+      if (introBlob) {
+        await decodeAudioBlob('audio_intro', introBlob);
+        const lbl = document.getElementById('lbl-intro-audio');
+        lbl.textContent = '✓ Audio Saludo Guardado';
+        lbl.classList.add('loaded');
+      }
+
+      const outroBlob = await getAssetFromDB('audio_outro');
+      if (outroBlob) {
+        await decodeAudioBlob('audio_outro', outroBlob);
+        const lbl = document.getElementById('lbl-outro-audio');
+        lbl.textContent = '✓ Audio Despedida Guardado';
+        lbl.classList.add('loaded');
+      }
+
+      const sfxBlob = await getAssetFromDB('sfx_countdown');
+      if (sfxBlob) {
+        await decodeAudioBlob('sfx_countdown', sfxBlob);
+        const lbl = document.getElementById('lbl-sfx-timer');
+        lbl.textContent = '✓ SFX Conteo Guardado';
+        lbl.classList.add('loaded');
+      }
+
+      await loadStoredCardBackgrounds();
+      renderQuestionsList();
+      renderLibraryProjectsList();
+      startAutosaveLoop();
+      if (restored) showAutosaveIndicator();
+    });
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text).replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+      }[m]));
+    }
+  </script>
+</body>
+</html>
