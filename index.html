@@ -2202,8 +2202,9 @@
         <div class="question-text-content full-width-text">${escapeHtml(outroText)}</div>
       `);
 
-      playVoice('audio_outro');
-    }
+      setTimeout(() => {
+    playVoice('audio_outro');
+}, 450);
 
     /* INICIALIZACIÓN */
     window.addEventListener('DOMContentLoaded', async () => {
