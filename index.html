@@ -1998,8 +1998,9 @@
         <div class="question-text-content full-width-text">${escapeHtml(introText)}</div>
       `);
 
-      playVoice('audio_intro');
-    }
+      setTimeout(() => {
+    playVoice('audio_intro');
+}, 450);
 
     function getPreloadedImageUrl(cacheKey, blob) {
       return new Promise((resolve) => {
@@ -2173,7 +2174,7 @@
       // DELAY DE 0.10 SEGUNDOS PARA EL AUDIO DE LA RESPUESTA
       ansVoiceDelayTimer = setTimeout(() => {
         playVoice(`q_${currentQuestionIdx}_ans`);
-      }, 100);
+      }, 150);
     }
 
     /* PASO 4: SIGUIENTE O FINAL */
